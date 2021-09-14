@@ -91,7 +91,7 @@ def test_namedtuple_schema():
             'pos3': {
                 'title': 'Pos3',
                 'type': 'array',
-                'items': [
+                'prefixItems': [
                     {'type': 'integer'},
                     {'type': 'integer'},
                 ],

@@ -537,7 +537,6 @@ def test_const_false():
 @pytest.mark.parametrize(
     'field_type,expected_schema',
     [
-        (tuple, {}),
         (
             Tuple[str, int, Union[str, int, float], float],
             [
@@ -551,6 +550,28 @@ def test_const_false():
     ],
 )
 def test_tuple(field_type, expected_schema):
+    class Model(BaseModel):
+        a: field_type
+
+    base_schema = {
+        'title': 'Model',
+        'type': 'object',
+        'properties': {'a': {'title': 'A', 'type': 'array'}},
+        'required': ['a'],
+    }
+    base_schema['properties']['a']['prefixItems'] = expected_schema
+
+    assert Model.schema() == base_schema
+
+
+@pytest.mark.parametrize(
+    'field_type,expected_schema',
+    [
+        (tuple, {}),
+        (Tuple, {}),
+    ],
+)
+def test_tuple_undefined_length(field_type, expected_schema):
     class Model(BaseModel):
         a: field_type
 
@@ -1939,7 +1960,7 @@ def test_model_with_extra_forbidden():
             {
                 'title': 'A',
                 'type': 'array',
-                'items': [
+                'prefixItems': [
                     {'exclusiveMinimum': 0, 'type': 'integer'},
                     {'exclusiveMinimum': 0, 'type': 'integer'},
                     {'exclusiveMinimum': 0, 'type': 'integer'},
@@ -2424,11 +2445,11 @@ def test_advanced_generic_schema():
                 'examples': 'examples',
             },
             'data3': {'title': 'Data3', 'type': 'array', 'items': {}},
-            'data4': {'title': 'Data4', 'type': 'array', 'items': {'$ref': '#/definitions/CustomType'}},
+            'data4': {'title': 'Data4', 'type': 'array', 'prefixItems': {'$ref': '#/definitions/CustomType'}},
             'data5': {
                 'title': 'Data5',
                 'type': 'array',
-                'items': [{'$ref': '#/definitions/CustomType'}, {'type': 'string'}],
+                'prefixItems': [{'$ref': '#/definitions/CustomType'}, {'type': 'string'}],
             },
         },
         'required': ['data0', 'data1', 'data2', 'data3', 'data4', 'data5'],
