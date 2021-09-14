@@ -95,6 +95,7 @@ def test_namedtuple_schema():
                     {'type': 'integer'},
                     {'type': 'integer'},
                 ],
+                'items': False,
             },
         },
         'required': ['pos1', 'pos2', 'pos3'],

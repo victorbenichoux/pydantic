@@ -556,7 +556,7 @@ def test_tuple(field_type, expected_schema):
     base_schema = {
         'title': 'Model',
         'type': 'object',
-        'properties': {'a': {'title': 'A', 'type': 'array'}},
+        'properties': {'a': {'title': 'A', 'type': 'array', 'items': False}},
         'required': ['a'],
     }
     base_schema['properties']['a']['prefixItems'] = expected_schema
@@ -569,6 +569,7 @@ def test_tuple(field_type, expected_schema):
     [
         (tuple, {}),
         (Tuple, {}),
+        (Tuple[str, ...], {'type': 'string'}),
     ],
 )
 def test_tuple_undefined_length(field_type, expected_schema):
@@ -578,7 +579,7 @@ def test_tuple_undefined_length(field_type, expected_schema):
     base_schema = {
         'title': 'Model',
         'type': 'object',
-        'properties': {'a': {'title': 'A', 'type': 'array'}},
+        'properties': {'a': {'title': 'A', 'type': 'array', "items": {}}},
         'required': ['a'],
     }
     base_schema['properties']['a']['items'] = expected_schema
@@ -1965,6 +1966,7 @@ def test_model_with_extra_forbidden():
                     {'exclusiveMinimum': 0, 'type': 'integer'},
                     {'exclusiveMinimum': 0, 'type': 'integer'},
                 ],
+                'items': False,
             },
         ),
         (
@@ -2445,11 +2447,17 @@ def test_advanced_generic_schema():
                 'examples': 'examples',
             },
             'data3': {'title': 'Data3', 'type': 'array', 'items': {}},
-            'data4': {'title': 'Data4', 'type': 'array', 'prefixItems': {'$ref': '#/definitions/CustomType'}},
+            'data4': {
+                'title': 'Data4',
+                'type': 'array',
+                'prefixItems': {'$ref': '#/definitions/CustomType'},
+                'items': False,
+            },
             'data5': {
                 'title': 'Data5',
                 'type': 'array',
                 'prefixItems': [{'$ref': '#/definitions/CustomType'}, {'type': 'string'}],
+                'items': False,
             },
         },
         'required': ['data0', 'data1', 'data2', 'data3', 'data4', 'data5'],

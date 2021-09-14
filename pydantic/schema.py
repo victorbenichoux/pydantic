@@ -503,12 +503,12 @@ def field_type_schema(
             if field.shape == SHAPE_GENERIC:
                 f_schema = sub_schema[0]
             else:
-                f_schema = {'type': 'array', 'prefixItems': sub_schema[0]}
+                f_schema = {'type': 'array', 'prefixItems': sub_schema[0], "items": False}
         else:
             if field.shape == SHAPE_GENERIC:
                 f_schema = {'type': 'array', 'items': sub_schema}
             else:
-                f_schema = {'type': 'array', 'prefixItems': sub_schema}
+                f_schema = {'type': 'array', 'prefixItems': sub_schema, "items": False}
         if field.shape == SHAPE_GENERIC:
             f_schema = {'allOf': [f_schema]}
     else:
